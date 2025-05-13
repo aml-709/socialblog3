@@ -1,0 +1,12 @@
+__pychache__/
+*.py[cod]
+*.sqlite3
+*.log
+
+venv/
+.env
+
+staticfiles/
+media/
+
+.vscode/

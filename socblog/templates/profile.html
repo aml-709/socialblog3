@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile">
+    <div class="container">
+        <div class="row">
+            <div class="card shadow-sm p-4 mb-4 bg-white rounded">
+                <div class="col-md-4 text-center">
+                    {% if user_profile.profile_image %}
+                        <img src="{{ user_profile.profile_image.url }}" alt="{{ user_profile.username }}" class="img-thumbnail" width="150">
+                    {% else %}
+                        <img src="https://via.placeholder.com/150" alt="Default Avatar" class="img-thumbnail" width="150">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <h2>{{ user_profile.username }}</h2>
+                    <p><strong>Биография:</strong> {{ user_profile.bio|default:"Биография не указана" }}</p>
+                    <p><strong>Подписчики:</strong> {{ user_profile.followers.count }}</p>
+                    <p><strong>Подписки:</strong> {{ user_profile.following.count }}</p>
+
+                    {% if user.is_authenticated %}
+                        {% if user == user_profile %}
+                            <a href="{% url 'edit_profile' %}" class="btn btn-primary btn-sm">Редактировать профиль</a>
+                            <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Выйти из аккаунта</a>
+                        {% else %}
+                            <form method="post" action="{% url 'toggle_follow' user_profile.username %}">
+                                {% csrf_token %}
+                                {% if is_following %}
+                                    <button class="btn btn-danger btn-sm">Отписаться</button>
+                                {% else %}
+                                    <button class="btn btn-success btn-sm">Подписаться</button>
+                                {% endif %}
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Войти</a>
+                        <a href="{% url 'register' %}" class="btn btn-outline-primary btn-sm">Зарегистрироваться</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'user_posts' user_profile.username %}" class="btn btn-outline-primary">Посты пользователя</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
